@@ -20,7 +20,8 @@
  *****************************************************************************/
 void BumpAllocator::init() {
 
-     /* Hier muess Code eingefuegt werden */
+     allocations = 0;
+     next = (unsigned char *)Allocator::heap_start;
 
 }
 
@@ -31,9 +32,11 @@ void BumpAllocator::init() {
  * Beschreibung:    Ausgabe der Freispeicherinfos. Zu Debuggingzwecken.      *
  *****************************************************************************/
 void BumpAllocator::dump_free_memory() {
-    
-     /* Hier muess Code eingefuegt werden */
+     kout << "Number of allocations: " << allocations << endl;
 
+     kout << "Heap pointer at: " << next << endl;
+
+     kout << "Free Memory: " << (heap_end - (uint64_t)next) <<  " byte(s)." << endl << endl;
 }
 
 
@@ -46,6 +49,14 @@ void * BumpAllocator::alloc(uint64_t req_size) {
 
      /* Hier muess Code eingefuegt werden */
 
+     if (uint64_t(next + req_size) <= heap_end) {
+          unsigned char * ret = next;
+          allocations = allocations + 1;
+          next = next + req_size;
+          return ret;
+     }
+     kout << "Requested memory for object is to large." << endl;
+     return NULL;
 }
 
 

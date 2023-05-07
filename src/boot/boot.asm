@@ -49,7 +49,7 @@ pagetable_end:  equ 0x200000      ;  = 2 MB
 [GLOBAL startup]
 [GLOBAL idt]
 [GLOBAL __cxa_pure_virtual]
-[GLOBAL _ZdlPv]
+;[GLOBAL _ZdlPv]
 ;[GLOBAL _ZdlPvj]
 [GLOBAL _ZdlPvm]
 

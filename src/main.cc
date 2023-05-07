@@ -13,24 +13,21 @@
 #include "kernel/Globals.h"
 #include "user/aufgabe1/TextDemo.h"
 #include "user/aufgabe1/KeyboardDemo.h"
+#include "user/aufgabe2/HeapDemo.h"
 
 
 void aufgabe01() { 
-   // Bildschirmausgabe testen
    text_demo();
-    
-   // Tastatur testen
    keyboard_demo();
 }
 
+void aufgabe02() {
+   heap_demo();
+}
+
 int main() {
-    /* Hier muess Code eingefuegt werden */
-
-    // Bildschirm loeschen.
-    
-    // Startmeldung ausgeben
-
     aufgabe01();
+    aufgabe02();
 
     while (1);
     return 0;

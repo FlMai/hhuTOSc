@@ -13,9 +13,9 @@
 
 void keyboard_demo() {
 
-    /* Hier muess Code eingefuegt werden */
     while(1) {
         char k = kb.key_hit().ascii();
+        if (k == '\n') break;
         kout.print(&k, 1, 0x0f);
     }
 }
