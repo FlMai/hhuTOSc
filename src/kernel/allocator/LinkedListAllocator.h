@@ -30,6 +30,9 @@ private:
 
       LinkedListAllocator(Allocator &copy); // Verhindere Kopieren
 
+      void addToChain(struct free_block *);
+      void mergeFreeBlocks();
+
 public:
       LinkedListAllocator () { }
 

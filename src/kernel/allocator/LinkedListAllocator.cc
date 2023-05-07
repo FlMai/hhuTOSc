@@ -11,6 +11,7 @@
 
 #include "kernel/Globals.h"
 #include "kernel/allocator/LinkedListAllocator.h"
+#include "LinkedListAllocator.h"
 
 #define HEAP_MIN_FREE_BLOCK_SIZE 64         // min. Groesse eines freien Blocks
 
@@ -25,16 +26,15 @@
  *                  Wird automatisch aufgerufen, sobald eine Funktion der    *
  *                  Speicherverwaltung erstmalig gerufen wird.               *
  *****************************************************************************/
-void LinkedListAllocator::init() {
+void LinkedListAllocator::init()
+{
 
-     initialized = true;
-     struct free_block *tmp = (struct free_block *) Allocator::heap_start;
-     tmp->size = Allocator::heap_size;
-     tmp->next = NULL;
-     free_start = tmp;
-
+    initialized = true;
+    struct free_block *tmp = (struct free_block *)Allocator::heap_start;
+    tmp->size = Allocator::heap_size;
+    tmp->next = NULL;
+    free_start = tmp;
 }
-
 
 /*****************************************************************************
  * Methode:         LinkedListAllocator::dump_free_memory                    *
@@ -165,37 +165,59 @@ void LinkedListAllocator::free(void *ptr) {
 
      uint64_t free_size = *(((uintptr_t *)ptr) - 1);
 
-     struct free_block *s = free_start;
-
      struct free_block *new_block = (struct free_block *)((uint8_t*)ptr - sizeof(uintptr_t));
      new_block->next = NULL;
      new_block->size = free_size;
 
-     if ( s == NULL ) {
+     addToChain(new_block);
+     mergeFreeBlocks(); 
+}
+
+
+/*   
+     Adds a free_block struct to te chain of free_blocks.
+     Adding happens in place and in the correct position of the chain, determined by pointer location.
+     Ensures that blocks are in order to be merged if consecutive.
+*/
+void LinkedListAllocator::addToChain(free_block *new_block) {
+     struct free_block *ptr = free_start;
+
+     if ( ptr == NULL ) {
           free_start = new_block;
-     } else if (s > new_block) {
-          new_block->next = s;
+     } else if (ptr > new_block) {
+          new_block->next = ptr;
           free_start = new_block;   
      } else {
           while (true) {
-               if (s->next > new_block || s->next == NULL) {
-                    new_block->next = s->next;
-                    s->next = new_block;
+               if (ptr->next > new_block || ptr->next == NULL) {
+                    new_block->next = ptr->next;
+                    ptr->next = new_block;
                     break;
                }
-               s = s->next;
+               ptr = ptr->next;
           }
      }
+}
 
-     s = free_start;
-     while (s != NULL) {
+
+/*
+     Merges consecuitve free_blocks inside the chain.
+     If a free_block->next points to the same address as its own + size we cane merge the two blocks.
+     Blocks are merged by adding the size and setting the next property to the next but one free_block.
+     Runtime is O(n), we iterate once over the chain.
+     Free_blocks must be in order on the heap to be merged.
+*/
+void LinkedListAllocator::mergeFreeBlocks() {
+     struct free_block *ptr = free_start;
+     while (ptr != NULL) {
           bool cont = false;
-          if ((uint8_t*)s + s->size == (uint8_t*)s->next) {
-               s->size = s->size + s->next->size;
-               s->next = s->next->next;
+          if ((uint8_t*)ptr + ptr->size == (uint8_t*)ptr->next) {
+               ptr->size = ptr->size + ptr->next->size;
+               ptr->next = ptr->next->next;
                cont = true;
           }
-          if (!cont) s = s->next;
-     }   
+          if (!cont) ptr = ptr->next;
+     }  
 }
+
 
