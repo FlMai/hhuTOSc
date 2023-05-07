@@ -13,5 +13,9 @@
 
 CPU             cpu;        // CPU-spezifische Funktionen
 CGA_Stream      kout;       // Ausgabe-Strom fuer Kernel
+PCSPK           pcspk;      // PC-Lautsprecher
 Keyboard        kb;         // Tastatur
+uint64_t        total_mem;  // RAM total
+//BumpAllocator         allocator;       
+LinkedListAllocator   allocator;     
 
