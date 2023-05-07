@@ -273,8 +273,22 @@ Key Keyboard::key_hit () {
     Key invalid;  // nicht explizit initialisierte Tasten sind ungueltig
          
     /* Hier muss Code eingefuegt werden. */
+    unsigned char ctrl_byte;
 
-    return invalid;
+    while(true){
+        ctrl_byte = ctrl_port.inb();
+        if(ctrl_byte & outb){   // signal is ready in data port
+            if(ctrl_byte & auxb) {
+                // discard mouse signal
+                data_port.inb();
+                continue;
+            }
+            code = data_port.inb();
+            if(key_decoded()) {
+                return gather.valid() ? gather : invalid;
+            }
+        }
+    }
 }
 
 
@@ -314,6 +328,32 @@ void Keyboard::reboot () {
 void Keyboard::set_repeat_rate (int speed, int delay) {
 
     /* Hier muss Code eingefuegt werden. */
+    unsigned char ctrl_byte;
+
+    if(speed < 0 || speed > 31 || delay < 0 || delay > 3) {
+        return;
+    }
+
+    unsigned char data_byte = (0b0000'0000 & (delay << 5)) & speed;
+
+    while(true){
+        ctrl_byte = ctrl_port.inb();
+        if(!(ctrl_byte & outb)){   // data port should be empty
+            data_port.outb(0xf3);
+            while(true) {
+                ctrl_byte = ctrl_port.inb();
+                if(ctrl_byte & outb) {
+                    unsigned char tmp = data_port.inb();
+                    if(tmp == 0xfa) {
+                        data_port.outb(data_byte);
+                        return;
+                    }
+                }
+            }
+        } else {
+            data_port.inb();    // discard data port
+        }
+    }
 
 }
 
