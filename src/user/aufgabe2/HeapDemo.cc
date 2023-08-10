@@ -69,4 +69,5 @@ void heap_demo() {
     }
     kout.setpos(30,10);
     allocator.dump_free_memory();
+    allocator.init();
 }

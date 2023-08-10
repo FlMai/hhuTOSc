@@ -12,6 +12,8 @@
 
 void sound_demo() {
    
-   /* Hier muess Code eingefuegt werden */
+   kout << "Playing Tetris" << endl;
+   pcspk.tetris();
+   kout << "END" << endl;
 
 }

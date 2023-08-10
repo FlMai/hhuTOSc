@@ -14,7 +14,7 @@
 #include "user/aufgabe1/TextDemo.h"
 #include "user/aufgabe1/KeyboardDemo.h"
 #include "user/aufgabe2/HeapDemo.h"
-
+#include "user/aufgabe2/SoundDemo.h"
 
 void aufgabe01() { 
    text_demo();
@@ -23,6 +23,7 @@ void aufgabe01() {
 
 void aufgabe02() {
    heap_demo();
+   sound_demo();
 }
 
 int main() {

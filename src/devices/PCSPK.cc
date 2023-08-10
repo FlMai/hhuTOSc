@@ -28,10 +28,10 @@ void PCSPK::play (float f, int len) {
     int freq = (int)f;
     int cntStart  =  1193180 / freq;
     int status;
-    
-    
+
+
     // Zaehler laden
-    control.outb (0xB6);            // Zaehler-2 konfigurieren
+    control.outb (0xB6);            // Zaehler-2 konfigurieren      (10110110)
     data2.outb (cntStart%256);      // Zaehler-2 laden (Lobyte)
     data2.outb (cntStart/256);      // Zaehler-2 laden (Hibyte)
 
@@ -41,7 +41,7 @@ void PCSPK::play (float f, int len) {
 
     // Pause
     delay(len);
-    
+
     // Lautsprecher ausschalten
     off ();
 }
@@ -63,7 +63,7 @@ void PCSPK::off () {
 /*****************************************************************************
  * Methode:         PCSPK::readCounter                                       *
  *---------------------------------------------------------------------------*
- * Beschreibung:    Zaehler von PIT Channel 0 auslesen.                      * 
+ * Beschreibung:    Zaehler von PIT Channel 0 auslesen.                      *
  *                  (wird fuer delay benoetigt).                             *
  *                                                                           *
  * Rückgabewerte:   counter                                                  *
@@ -83,14 +83,27 @@ inline unsigned int PCSPK::readCounter() {
  *---------------------------------------------------------------------------*
  * Beschreibung:    Verzoegerung um X ms (in 1ms Schritten; Min. 1ms).       *
  *                  Da der Counter "nur" 16 Bit hat muss man evt. mehrmals   *
- *                  herunterzaehlen.                                         * 
+ *                  herunterzaehlen.                                         *
  *                                                                           *
  * Parameter:       time (delay in ms)                                       *
  *****************************************************************************/
 inline void PCSPK::delay (int time) {
-
-    /* Hier muess Code eingefuegt werden */
-
+    // A counter value of 1193 represents ~1ms, repeating $time times for the full delay
+    // 1193 = 0000'0100'1010'1001
+    unsigned int ic1, ic2 = 0;
+    for (int counter = time; counter > 0; counter--) {
+        control.outb(0x30);
+        data0.outb(0b1010'1001);
+        data0.outb(0b0000'0100);
+        ic1 = readCounter();
+        while(true) {     // counter wraps arround after 0
+            ic2 = readCounter();
+            if (ic2 == 0) break;
+            if (ic2 > ic1) break;
+            ic1 = ic2;
+        }
+    }
+    return;
 }
 
 
