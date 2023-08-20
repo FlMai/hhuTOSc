@@ -12,8 +12,9 @@
 
 #include "devices/Key.h"
 #include "kernel/IOport.h"
+#include "kernel/interrupts/ISR.h"
 
-class Keyboard {
+class Keyboard : public ISR {
     
 private:
     Keyboard(const Keyboard &copy); // Verhindere Kopieren
@@ -61,15 +62,17 @@ private:
 
     // Ermittelt anhand von Tabellen den ASCII-Code.
     void get_ascii_code ();
+
+    Key key_hit ();
     
     
 public:
+    // speichert den ASCII-Code der zuletzt gedrückten Taste
+   // Variable wird in 'trigger' geschrieben
+   unsigned int lastkey; 
 
    // Initialisierung der Tastatur.
    Keyboard ();
-
-   // Tastaturabfrage (vorerst Polling)
-   Key key_hit ();
 
    // Fuehrt einen Neustart des Rechners durch.
    void reboot ();
@@ -79,6 +82,12 @@ public:
 
    // Setzt oder loescht die angegebene Leuchtdiode.
    void set_led (char led, bool on);
+
+   // Aktivierung der Unterbrechungen fuer die Tastatur
+   void plugin ();
+    
+   // Unterbrechnungsroutine der Tastatur.
+   void trigger ();
  };
 
 #endif

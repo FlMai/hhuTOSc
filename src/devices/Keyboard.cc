@@ -9,6 +9,7 @@
  *****************************************************************************/
 
 #include "devices/Keyboard.h"
+#include "kernel/Globals.h"
 
 /* Tabellen fuer ASCII-Codes (Klassenvariablen) intiialisieren */
 
@@ -272,21 +273,17 @@ Keyboard::Keyboard () :
 Key Keyboard::key_hit () {
     Key invalid;  // nicht explizit initialisierte Tasten sind ungueltig
          
-    /* Hier muss Code eingefuegt werden. */
     unsigned char ctrl_byte;
 
-    while(true){
-        ctrl_byte = ctrl_port.inb();
-        if(ctrl_byte & outb){   // signal is ready in data port
-            if(ctrl_byte & auxb) {
-                // discard mouse signal
-                data_port.inb();
-                continue;
-            }
-            code = data_port.inb();
-            if(key_decoded()) {
-                return gather.valid() ? gather : invalid;
-            }
+    ctrl_byte = ctrl_port.inb();
+    if(ctrl_byte & outb){   // signal is ready in data port
+        if(ctrl_byte & auxb) {
+            // discard mouse signal
+            data_port.inb();
+        }
+        code = data_port.inb();
+        if(key_decoded()) {
+            return gather;
         }
     }
 }
@@ -371,4 +368,24 @@ void Keyboard::set_led (char led, bool on) {
 
     /* Hier muss Code eingefuegt werden. */
 
+}
+
+void Keyboard::plugin() {
+    pic.allow(1);
+    if (!pic.status(1)) {
+        kout << "Couldn't plugin Keyboard! Error in PIC assignment." << endl;
+    }
+    if (intdis.assign(IntDispatcher::keyboard, kb) != 0) {
+        kout << "Couldn't plugin Keyboard! Error in ISR assignment." << endl;
+    }
+    kout << "Registered KB" << endl;
+}
+
+void Keyboard::trigger() {
+    Key k = kb.key_hit();
+    if (k.valid()) {
+        kout.setpos(15,20);
+        kout << k << endl;
+    }
+    return;
 }

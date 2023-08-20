@@ -1,21 +1,20 @@
 /*****************************************************************************
  *                                                                           *
- *                        K E Y B O A R D D E M O                            *
+ *                                I N P U T                                  *
  *                                                                           *
  *---------------------------------------------------------------------------*
- * Beschreibung:    Testausgaben für den CGA-Treiber.                        *
+ * Beschreibung:    Hilfsfunktion zum Warten bis auf der Tastatur die Ein-   * 
+ *                  -gabetaste gedrückt wird.                                * 
  *                                                                           *
- * Autor:           Michael Schoettner, HHU, 26.10.2018                      *
+ * Autor:           Michael Schoettner, HHU, 2.05.2022                       *
  *****************************************************************************/
+#ifndef __Input_include__
+#define __Input_include__
 
-#include "kernel/Globals.h"
+
+char getch();
+void waitForReturn();
 
 
-void keyboard_demo() {
+#endif
 
-    // while(1) {
-    //     char k = kb.key_hit().ascii();
-    //     if (k == '\n') break;
-    //     kout.print(&k, 1, 0x0f);
-    // }
-}

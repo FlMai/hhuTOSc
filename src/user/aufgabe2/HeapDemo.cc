@@ -15,16 +15,16 @@
 
 
 // Hilfsfunktion: Auf Return-Taste warten
-void waitForReturn() {
+// void waitForReturn() {
 
-    /* hier muss Code eingefuegt werden */
-    while(1) {
-        char k = kb.key_hit().ascii();
-        if (k == '\n') break;
-        kout.print(&k, 1, 0x0f);
-    }
+//     /* hier muss Code eingefuegt werden */
+//     // while(1) {
+//     //     char k = kb.key_hit().ascii();
+//     //     if (k == '\n') break;
+//     //     kout.print(&k, 1, 0x0f);
+//     // }
 
-}
+// }
 
 
 void heap_demo() {
