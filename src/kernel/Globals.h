@@ -18,6 +18,7 @@
 #include "kernel/allocator/LinkedListAllocator.h"
 #include "kernel/interrupts/PIC.h"
 #include "kernel/interrupts/IntDispatcher.h"
+//#include "kernel/threads/Scheduler.h"
 
 extern CPU                      cpu;        // CPU-spezifische Funktionen
 extern CGA_Stream               kout;       // Ausgabe-Strom fuer Kernel
@@ -28,4 +29,5 @@ extern uint64_t                 total_mem;  // RAM total
 extern LinkedListAllocator      allocator;
 extern IntDispatcher            intdis;     // Unterbrechungsverteilung
 extern PIC                      pic;        // Interrupt-Controller
+//extern Scheduler                scheduler;
 #endif

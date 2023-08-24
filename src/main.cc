@@ -16,6 +16,7 @@
 #include "user/aufgabe2/HeapDemo.h"
 #include "user/aufgabe2/SoundDemo.h"
 #include "user/aufgabe3/KeyIRQDemo.h"
+#include "user/aufgabe4/CoroutineDemo.h"
 
 extern "C" void init_interrupts();     // in 'interrupts.asm' 
 
@@ -35,6 +36,11 @@ void aufgabe02() {
    sound_demo();
 }
 
+void aufgabe04() {
+   CoroutineDemo *cd = new CoroutineDemo();
+   cd->main();
+}
+
 int main() {
    //aufgabe01();
    //aufgabe02();
@@ -42,18 +48,16 @@ int main() {
    // Heapverwaltung initialisieren
    allocator.init();
    // IDT & PIC initialisieren
-   init_interrupts();     // in 'interrupts.asm' 
+   // init_interrupts();     // in 'interrupts.asm' 
 
-   // Tastatur-Unterbrechungsroutine 'einstoepseln'
-   kb.plugin();
-   // Interrupt-Verarbeitung durch CPU erlauben
-   if (!cpu.disable_int()) {
-      cpu.enable_int();
-   }
-   if (pic.status(1)) {
-      kout << "KB enabled" << endl;
-   }
-   aufgabe03();
+   // // Tastatur-Unterbrechungsroutine 'einstoepseln'
+   // //kb.plugin();
+   // // Interrupt-Verarbeitung durch CPU erlauben
+   // if (!cpu.disable_int()) {
+   //    cpu.enable_int();
+   // }
+   
+   aufgabe04();
 
    while (1);
    return 0;

@@ -20,4 +20,5 @@ uint64_t                total_mem;  // RAM total
 LinkedListAllocator     allocator; 
 IntDispatcher           intdis;     // Unterbrechungsverteilung
 PIC                     pic;        // Interrupt-Controller
+//Scheduler               scheduler;
 
