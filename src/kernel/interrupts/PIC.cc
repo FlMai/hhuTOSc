@@ -78,9 +78,9 @@ void PIC::forbid (int irq) {
 bool PIC::status (int irq) {
 
     if (irq < 8) {
-        return  (IMR1.inb() & (1<<(irq))) == 0;     // Invert boolean from bit comp because 0 = enabled IRQ in mask
+        return (IMR1.inb() & (1<<(irq))) == 0;     // Invert boolean from bit comp because 0 = enabled IRQ in mask
     } else if (irq < 16) {
-        return IMR2.inb() & (1<<(irq-8)) == 0;
+        return (IMR2.inb() & (1<<(irq-8))) == 0;
     }
     kout << "IRQ number of 16, not possible!" << endl;
     return false;

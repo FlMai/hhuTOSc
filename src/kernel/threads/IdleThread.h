@@ -26,7 +26,8 @@ public:
     
     void run () {
         while (1) {
-            scheduler.yield ();
+            //scheduler.yield ();
+            cpu.pause();        // preempt idle
         }
     }
     

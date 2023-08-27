@@ -32,10 +32,11 @@ private:
      
 private:
     Queue readyQueue;   // auf die CPU wartende Threads
-   
+
 public:
     Scheduler () {}
 
+    bool initalized = false;
     // Scheduler starten
     void schedule ();
     
@@ -50,6 +51,8 @@ public:
 
     // CPU freiwillig abgeben und Auswahl des naechsten Threads
     void yield ();
+
+    void preempt();
 };
 
 #endif

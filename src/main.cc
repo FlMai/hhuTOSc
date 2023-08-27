@@ -11,54 +11,50 @@
  *****************************************************************************/
 
 #include "kernel/Globals.h"
-#include "user/aufgabe1/TextDemo.h"
-#include "user/aufgabe1/KeyboardDemo.h"
-#include "user/aufgabe2/HeapDemo.h"
-#include "user/aufgabe2/SoundDemo.h"
-#include "user/aufgabe3/KeyIRQDemo.h"
-#include "user/aufgabe4/CoroutineDemo.h"
+#include "lib/Input.h"
+#include "kernel/threads/IdleThread.h"
+#include "user/demo/HeapDemo.h"
+#include "user/demo/TextDemo.h"
+#include "user/demo/SoundDemo.h"
+#include "user/demo/RebootThread.h"
 
-extern "C" void init_interrupts();     // in 'interrupts.asm' 
-
-
-void aufgabe03() {
-   // Keyboard & Interrupts testen
-   key_irq_demo();
-}
-
-void aufgabe01() { 
-   text_demo();
-   keyboard_demo();
-}
-
-void aufgabe02() {
-   heap_demo();
-   sound_demo();
-}
-
-void aufgabe04() {
-   CoroutineDemo *cd = new CoroutineDemo();
-   cd->main();
-}
+extern "C" void init_interrupts();     
 
 int main() {
-   //aufgabe01();
-   //aufgabe02();
    kout.clear();
-   // Heapverwaltung initialisieren
    allocator.init();
-   // IDT & PIC initialisieren
-   // init_interrupts();     // in 'interrupts.asm' 
+   init_interrupts();
+   kb.plugin();   
+   pit.plugin();
 
-   // // Tastatur-Unterbrechungsroutine 'einstoepseln'
-   // //kb.plugin();
-   // // Interrupt-Verarbeitung durch CPU erlauben
-   // if (!cpu.disable_int()) {
-   //    cpu.enable_int();
-   // }
-   
-   aufgabe04();
+   if (!cpu.disable_int()) {
+      cpu.enable_int();
+   }
 
-   while (1);
+   kout << "hhuTOSc by Florian M." << endl << endl;
+   kout << "Main Menu" << endl << "===========" << endl << endl;
+   kout << "  [0] Heap Demo" << endl;
+   kout << "  [1] Text + Keyboard Demo" << endl;
+   kout << "  [2] Sound Demo" << endl;
+   kout << "  [3] Preempt Multitask Demo" << endl;
+   kout << "  [4] Tetris" << endl;
+
+   while (true) {
+      char k = getch();
+      if (k == '0') {
+         heap_demo();
+      } else if (k == '1') {
+         text_demo();
+      } else if (k == '2') {
+         SoundDemo *s = new SoundDemo();
+         RebootThread *r = new RebootThread();
+
+         scheduler.ready(s);
+         scheduler.ready(r);
+         scheduler.schedule();      
+      }
+      
+   }
+   while(1) {}
    return 0;
  }

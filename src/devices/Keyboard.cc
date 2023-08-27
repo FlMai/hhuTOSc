@@ -378,14 +378,12 @@ void Keyboard::plugin() {
     if (intdis.assign(IntDispatcher::keyboard, kb) != 0) {
         kout << "Couldn't plugin Keyboard! Error in ISR assignment." << endl;
     }
-    kout << "Registered KB" << endl;
 }
 
 void Keyboard::trigger() {
     Key k = kb.key_hit();
     if (k.valid()) {
-        kout.setpos(15,20);
-        kout << k << endl;
+        lastkey = k;
     }
     return;
 }

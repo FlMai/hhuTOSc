@@ -76,7 +76,7 @@ void LinkedListAllocator::dump_free_memory() {
  *****************************************************************************/
 void * LinkedListAllocator::alloc(uint64_t req_size) {
 
-          if (!initialized) {
+     if (!initialized) {
           init();
      }
 

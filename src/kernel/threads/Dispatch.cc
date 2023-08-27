@@ -45,5 +45,5 @@ void Dispatcher::start (Thread& first) {
 void Dispatcher::dispatch (Thread& next) {
     Thread* current = active;
     active = &next;
-    current->switchTo (next);
+    current->switchTo(next);
 }

@@ -19,6 +19,8 @@
 
 #include "kernel/threads/Scheduler.h"
 #include "kernel/threads/IdleThread.h"
+#include "kernel/Globals.h"
+#include "user/demo/MyObj.h"
 
 
 
@@ -28,12 +30,9 @@
  * Beschreibung:    Scheduler starten. Wird nur einmalig aus main.cc gerufen.*
  *****************************************************************************/
 void Scheduler::schedule () {
-
-    /* hier muss Code eingefuegt werden */
-    
-    /* Bevor diese Methode anufgerufen wird, muss zumindest der Idle-Thread 
-     * in der Queue eingefuegt worden sein. 
-     */
+    cpu.disable_int();
+    this->initalized = true;
+    dispatcher.start(*(Thread *)this->readyQueue.dequeue());
 }
 
 
@@ -46,9 +45,10 @@ void Scheduler::schedule () {
  *      that        Einzutragender Thread                                    *
  *****************************************************************************/
 void Scheduler::ready (Thread * that) {
-
-    /* hier muss Code eingefuegt werden */
-
+    cpu.disable_int();
+    // kout << "Thread with id " << that->tid << " is ready." << endl;
+    this->readyQueue.enqueue(that);
+    cpu.enable_int();
 }
 
 
@@ -61,9 +61,8 @@ void Scheduler::ready (Thread * that) {
  *                  nicht in der readyQueue.                                 *
  *****************************************************************************/
 void Scheduler::exit () {
-
-    /* hier muss Code eingefuegt werden */
-
+    cpu.disable_int();
+    dispatcher.dispatch(*(Thread *) this->readyQueue.dequeue());
 }
 
 
@@ -78,10 +77,10 @@ void Scheduler::exit () {
  * Parameter:                                                                *
  *      that        Zu terminierender Thread                                 *
  *****************************************************************************/
-void Scheduler::kill (Thread * that) {
-
-    /* hier muss Code eingefuegt werden */
-
+void Scheduler::kill (Thread *that) {
+    cpu.disable_int();
+    this->readyQueue.remove(that);
+    cpu.enable_int();
 }
 
 
@@ -97,7 +96,24 @@ void Scheduler::kill (Thread * that) {
  *                           readyQueue leer.                                *
  *****************************************************************************/
 void Scheduler::yield () {
+    cpu.disable_int();
+    this->readyQueue.enqueue(dispatcher.get_active());
+    dispatcher.dispatch(*(Thread *) this->readyQueue.dequeue());
+}
 
-    /* hier muss Code eingefuegt werden */
-
+/*****************************************************************************
+ * Methode:         Scheduler::preempt                                       *
+ *---------------------------------------------------------------------------*
+ * Beschreibung:    Diese Funktion wird aus der ISR des PITs aufgerufen und  *
+ *                  schaltet auf den naechsten Thread um, sofern einer vor-  *
+ *                  handen ist.                                              *
+ *****************************************************************************/
+void Scheduler::preempt () {
+    cpu.disable_int();
+    this->readyQueue.enqueue(dispatcher.get_active());
+    int x,y;
+    kout.getpos(x,y);
+    kout << " " << endl;
+    kout.setpos(0,0);
+    dispatcher.dispatch(*(Thread *) this->readyQueue.dequeue());
 }

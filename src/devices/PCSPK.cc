@@ -38,7 +38,8 @@ void PCSPK::play (float f, int len) {
     // Lautsprecher einschalten
     status = (int)ppi.inb ();       // Status-Register des PPI auslesen
     ppi.outb ( status|3 );          // Lautpsrecher Einschalten
-
+    kout.setpos(20, 20);
+    kout << "Playing freq: " << freq << " for " << len << " milliseconds." << endl;
     // Pause
     delay(len);
 
@@ -88,20 +89,12 @@ inline unsigned int PCSPK::readCounter() {
  * Parameter:       time (delay in ms)                                       *
  *****************************************************************************/
 inline void PCSPK::delay (int time) {
-    // A counter value of 1193 represents ~1ms, repeating $time times for the full delay
-    // 1193 = 0000'0100'1010'1001
-    unsigned int ic1, ic2 = 0;
-    for (int counter = time; counter > 0; counter--) {
-        control.outb(0x30);
-        data0.outb(0b1010'1001);
-        data0.outb(0b0000'0100);
-        ic1 = readCounter();
-        while(true) {     // counter wraps arround after 0
-            ic2 = readCounter();
-            if (ic2 == 0) break;
-            if (ic2 > ic1) break;
-            ic1 = ic2;
-        }
+    //time is in ms, PIT ticks all 10ms, therefor time/10 to get delay in systemticks
+    uint64_t start = systime;
+    while(true) {
+        cpu.pause();
+        uint64_t now = systime;
+        if ((start + (time/10)) < now) break;
     }
     return;
 }

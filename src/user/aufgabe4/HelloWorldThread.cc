@@ -19,9 +19,9 @@
  * Beschreibung:    Einstiegsfunktion in unseren Thread.                     *
  *****************************************************************************/
 void HelloWorldThread::run () {
-    
+    kout.setpos(10,10);
     kout << "Hallo Welt von einem Thread!" << endl;
 
     // selbst terminieren
-    //scheduler.exit ();
+    scheduler.exit ();
 }

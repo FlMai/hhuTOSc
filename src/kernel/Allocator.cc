@@ -45,21 +45,33 @@ Allocator::Allocator() {
  * und entsprechend 'mm_alloc' und 'mm_free' aufrufen.                       *
  *****************************************************************************/
 void* operator new ( size_t size ) {
-     return allocator.alloc(size);
+    cpu.disable_int();
+    void* ret = allocator.alloc(size);
+    cpu.enable_int();
+    return ret;
 }
 
 void operator delete ( void* ptr )  {
+    cpu.enable_int();
     allocator.free(ptr);
+    cpu.disable_int();
 }
 
 void* operator new[]( size_t count ) {
-    return allocator.alloc(count);
+    cpu.enable_int();
+    void *ret = allocator.alloc(count);
+    cpu.disable_int();
+    return ret; 
 }
 
 void operator delete[] ( void* ptr ) {
+    cpu.disable_int();
     allocator.free(ptr);
+    cpu.enable_int();
 }
 
 void operator delete(void*ptr, unsigned long) {
+    cpu.disable_int();
     allocator.free(ptr);
+    cpu.enable_int();
 }

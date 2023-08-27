@@ -18,7 +18,8 @@
 #include "kernel/allocator/LinkedListAllocator.h"
 #include "kernel/interrupts/PIC.h"
 #include "kernel/interrupts/IntDispatcher.h"
-//#include "kernel/threads/Scheduler.h"
+#include "kernel/threads/Scheduler.h"
+#include "devices/PIT.h"
 
 extern CPU                      cpu;        // CPU-spezifische Funktionen
 extern CGA_Stream               kout;       // Ausgabe-Strom fuer Kernel
@@ -29,5 +30,9 @@ extern uint64_t                 total_mem;  // RAM total
 extern LinkedListAllocator      allocator;
 extern IntDispatcher            intdis;     // Unterbrechungsverteilung
 extern PIC                      pic;        // Interrupt-Controller
-//extern Scheduler                scheduler;
+extern Scheduler                scheduler;
+extern int                      threadId;
+extern Dispatcher               dispatcher;
+extern uint64_t              systime;    // wird all 10ms hochgezaehlt
+extern PIT                   pit;        // Zeitgeber
 #endif

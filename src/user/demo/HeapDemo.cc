@@ -10,27 +10,47 @@
 
 #include "kernel/Globals.h"
 #include "kernel/Allocator.h"
-#include "user/aufgabe2/HeapDemo.h"
-#include "user/aufgabe2/MyObj.h"
+#include "user/demo/HeapDemo.h"
+#include "user/demo/MyObj.h"
+#include "lib/Input.h"
 
 void heap_demo() {
-    kout.clear();
-    allocator.dump_free_memory();
-
-    int a = 1;
+    
+    int a = 0;
     while ( true ) {
+        kout.clear();
+        kout << "Heap allocation and free demo." << endl;
         MyObj *testObj1 = new MyObj();
         MyObj *testObj2 = new MyObj();
         MyObj *testObj3 = new MyObj();
-        if (testObj1 == NULL || testObj2 == NULL || testObj3 == NULL) break;
-        delete testObj2;
-        kout.setpos(0,0);
-        allocator.dump_free_memory();
-        kout.setpos(60,0);
+        MyObj *testObj4 = new MyObj();
+        MyObj *testObj5 = new MyObj();
+        if (testObj1 == NULL || testObj2 == NULL || testObj3 == NULL || testObj4 == NULL || testObj5 == NULL) break;
+        kout.setpos(60,5);
         kout << "#Allocations:" << a << endl;
+        
+        delete testObj2;
+        delete testObj4;
+        kout.setpos(0,3);
+        allocator.dump_free_memory();
+        
+        while(true) {
+            char k = getch();
+            if (k == 'r') kb.reboot();
+            if (k == '\n') break;
+        }
+        delete testObj3;
+        allocator.dump_free_memory();
+        
         a++;
+        while(true) {
+            char k = getch();
+            if (k == 'r') kb.reboot();
+            if (k == '\n') break;
+        }    
     }
-    kout.setpos(30,10);
-    allocator.dump_free_memory();
-    allocator.init();
+    while(true) {
+        char k = getch();
+        if (k == 'r') kb.reboot();
+    } 
 }
