@@ -5,8 +5,9 @@
 void text_demo() {
 
    kout.clear();
-   kout << "Test der Bildschirmausgbe und Tastaturfunktion.\n" << endl;
-
+   kout << "Test der Bildschirmausgbe und Tastaturfunktion." << endl;
+   kout << "You can type here." << endl;
+   kout << "Press r to reboot." << endl << endl;
    kout << "|-----------------------------------------------------------------------|" << endl;
    kout << "|    dec    |      hex      |         oct         |         bin         |" << endl;
    kout << "|-----------------------------------------------------------------------|" << endl;
@@ -38,6 +39,13 @@ void text_demo() {
    while (true) {
       char k = getch();
       if (k == 'r') kb.reboot();
+      if (k == '\b') {
+         int x,y;
+         kout.getpos(x,y);
+         kout.show(x-1,y, ' ');
+         kout.setpos(x-1, y);
+         continue;
+      }
       kout.print(&k, 1);
    }
 

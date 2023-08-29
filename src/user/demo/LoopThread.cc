@@ -3,9 +3,10 @@
 
 void LoopThread::run () {
    while (true) {
-      kout.setpos(15*this->tid,12);
+      cpu.disable_int();
+      kout.setpos(15*this->tid,15);
       kout << "[" << this->tid << "] : " << this->counter << endl;
+      cpu.enable_int();
       this->counter = this->counter + 1;
-      scheduler.yield();
    }
 }

@@ -38,8 +38,8 @@ void PCSPK::play (float f, int len) {
     // Lautsprecher einschalten
     status = (int)ppi.inb ();       // Status-Register des PPI auslesen
     ppi.outb ( status|3 );          // Lautpsrecher Einschalten
-    kout.setpos(20, 20);
-    kout << "Playing freq: " << freq << " for " << len << " milliseconds." << endl;
+    //kout.setpos(20, 20);
+    //kout << "Playing freq: " << freq << " for " << len << " milliseconds." << endl;
     // Pause
     delay(len);
 

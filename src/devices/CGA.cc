@@ -158,6 +158,20 @@ void CGA::scrollup () {
     }
 }
 
+void CGA::tetris_scroll(int row) {
+    int x, y;
+    for(int h = 35; h < 45; h++){
+        for(int v = row; v > 4; v--) {
+            CGA::setpos(h, v-1);
+            CGA::getpos(x, y);
+            char *cursor = (char *)(CGA::CGA_START + 2*(x+y*80));
+            char tmp = *cursor;
+            char tmpAttrib = *(cursor+1);
+            CGA::show(h, v, tmp, tmpAttrib);
+        }
+    }
+}
+
 
 /*****************************************************************************
  * Methode:         CGA::clear                                               *

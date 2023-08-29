@@ -5,6 +5,6 @@
 void RebootThread::run () {
     while(true) {
         char k = getch();
-        if (k == 'r') kb.reboot();
+        if( k == 'r') kb.reboot();
     }
 }

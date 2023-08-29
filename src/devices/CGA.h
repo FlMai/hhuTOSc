@@ -67,6 +67,8 @@ public:
     
     // Hilfsfunktion zur Erzeugung eines Attribut-Bytes
     unsigned char attribute (CGA::color bg, CGA::color fg, bool blink);
+
+    void tetris_scroll(int row);
 };
 
 #endif
